@@ -32,6 +32,9 @@ namespace deVoid.UIFramework
             }
         }
 
+        private RectTransform _canvasRect;
+        private Camera _mainCam;
+
         /// <summary>
         /// The Camera being used by the Main UI Canvas
         /// </summary>
@@ -39,7 +42,10 @@ namespace deVoid.UIFramework
             get { return MainCanvas.worldCamera; }
         }
 
-        private void Awake() {
+        private void Awake()
+        {
+            _mainCam = Camera.main;
+            _canvasRect = GetComponent<RectTransform>();
             if (initializeOnAwake) {
                 Initialize();    
             }
@@ -306,6 +312,13 @@ namespace deVoid.UIFramework
             if (graphicRaycaster != null) {
                 graphicRaycaster.enabled = true;
             }
+        }
+        
+        public Vector3 WorldToCanvasPoint(Vector3 worldPos)
+        {
+            Vector3 worldToScreenPoint = _mainCam.WorldToScreenPoint(worldPos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(_canvasRect, worldToScreenPoint, UICamera, out Vector3 rectWorldPos);
+            return rectWorldPos;
         }
     }
 }
